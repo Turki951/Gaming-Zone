@@ -1,0 +1,11 @@
+{
+  "name": "gaming-zone",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GAMING ZONE - single-file HTML storefront",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "echo \"Static site - no build step required\""
+  }
+}
