@@ -154,17 +154,29 @@
                 </button>
             </nav>
 
-            <!-- Action Quick Button -->
-            <div class="hidden lg:block">
-                <a id="header-invite-btn" href="https://discord.gg/989gjyxrgf" target="_blank" class="px-5 py-2.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-black font-black text-sm rounded-lg shadow-md hover:shadow-gold-500/20 transform hover:-translate-y-0.5 active:translate-y-0 transition-all inline-flex items-center">
-                    <i class="fab fa-discord ml-1.5 text-base"></i> الدخول للسيرفر
-                </a>
-            </div>
+            <!-- Header Actions: Cart, Account, Invite, Mobile Toggle -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button type="button" onclick="openCartDrawer()" aria-label="سلة المشتريات" class="relative p-2.5 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-gold-400 hover:border-gold-500/40 transition-all">
+                    <i class="fas fa-cart-shopping text-lg"></i>
+                    <span id="cart-count-badge" class="absolute -top-2 -left-2 min-w-[20px] h-5 px-1 rounded-full bg-gold-500 text-black text-[11px] font-black flex items-center justify-center transition-transform duration-300 hidden">0</span>
+                </button>
+                <button type="button" onclick="openAuthModal()" id="header-account-btn" aria-label="تسجيل الدخول" class="p-2.5 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-gold-400 hover:border-gold-500/40 transition-all flex items-center gap-2">
+                    <i class="fas fa-user text-lg" id="header-account-icon"></i>
+                    <span id="header-account-label" class="hidden xl:inline text-xs font-bold max-w-[110px] truncate">تسجيل الدخول</span>
+                </button>
 
-            <!-- Mobile Menu Toggle Button -->
-            <button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-gold-400 focus:outline-none p-2 rounded-lg bg-white/5 border border-white/10">
-                <i class="fas fa-bars text-xl text-gray-300" id="menu-icon"></i>
-            </button>
+                <!-- Action Quick Button -->
+                <div class="hidden lg:block">
+                    <a id="header-invite-btn" href="https://discord.gg/989gjyxrgf" target="_blank" class="px-5 py-2.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-black font-black text-sm rounded-lg shadow-md hover:shadow-gold-500/20 transform hover:-translate-y-0.5 active:translate-y-0 transition-all inline-flex items-center">
+                        <i class="fab fa-discord ml-1.5 text-base"></i> الدخول للسيرفر
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Toggle Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-gold-400 focus:outline-none p-2 rounded-lg bg-white/5 border border-white/10">
+                    <i class="fas fa-bars text-xl text-gray-300" id="menu-icon"></i>
+                </button>
+            </div>
         </div>
 
         <!-- Mobile Drawer Menu -->
@@ -254,14 +266,18 @@
                             <p class="text-xs text-gray-400 mt-1">طرق بيع وتسليم رسمية بالكامل مع توثيق عبر نظام تذاكر الديسكورد</p>
                         </div>
                     </div>
-                    <div class="flex gap-4">
+                    <div class="flex flex-wrap justify-center gap-3 sm:gap-4">
                         <div class="bg-black/40 border border-white/5 px-4 py-2.5 rounded-xl">
-                            <span class="text-[10px] text-gray-500 block">إجمالي المبيعات</span>
-                            <span class="text-sm font-black text-gold-400" id="stat-total-sales">٠ مبيعة</span>
+                            <span class="text-[10px] text-gray-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>إجمالي المبيعات</span>
+                            <span class="text-sm font-black text-gold-400 inline-block transition-transform duration-300" id="stat-total-sales" aria-live="polite">٠ مبيعة</span>
                         </div>
                         <div class="bg-black/40 border border-white/5 px-4 py-2.5 rounded-xl">
-                            <span class="text-[10px] text-gray-500 block">تقييم المتجر</span>
-                            <span class="text-sm font-black text-green-400">4.9 / 5.0 ★</span>
+                            <span class="text-[10px] text-gray-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>تقييم المتجر</span>
+                            <span class="text-sm font-black text-green-400 inline-block transition-transform duration-300" id="stat-rating-avg" aria-live="polite">— / 5.0 ★</span>
+                        </div>
+                        <div class="bg-black/40 border border-white/5 px-4 py-2.5 rounded-xl">
+                            <span class="text-[10px] text-gray-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>عدد التقييمات</span>
+                            <span class="text-sm font-black text-gold-400 inline-block transition-transform duration-300" id="stat-rating-count" aria-live="polite">٠ تقييم</span>
                         </div>
                     </div>
                 </div>
@@ -958,9 +974,147 @@
     <!-- DYNAMIC CUSTOM NOTIFICATION TOAST SYSTEM -->
     <div id="toast-container" class="fixed top-24 left-4 z-[9999] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
 
+    <!-- SHOPPING CART DRAWER -->
+    <div id="cart-overlay" onclick="closeCartDrawer()" class="fixed inset-0 z-[9990] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <aside id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true" class="fixed top-0 left-0 h-full w-full max-w-md z-[9995] bg-darkBg/95 backdrop-blur-xl border-r border-gold-500/20 shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-300">
+        <div class="flex items-center justify-between p-5 border-b border-white/10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-400 text-lg border border-gold-500/20">
+                    <i class="fas fa-cart-shopping"></i>
+                </div>
+                <div>
+                    <h3 id="cart-title" class="text-lg font-black text-white">سلة المشتريات</h3>
+                    <p class="text-[11px] text-gray-400" id="cart-items-count-label">السلة فارغة</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeCartDrawer()" aria-label="إغلاق السلة" class="text-gray-400 hover:text-white p-2 bg-white/5 rounded-full border border-white/5 w-9 h-9 flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div id="cart-items-list" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+
+        <div id="cart-footer" class="border-t border-white/10 p-5 space-y-4 bg-black/40">
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between text-gray-400">
+                    <span>عدد القطع</span>
+                    <span id="cart-total-qty" class="font-bold text-white">٠</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="font-black text-white">الإجمالي</span>
+                    <span id="cart-total-price" class="text-2xl font-black text-gold-400" dir="ltr">$0.00</span>
+                </div>
+            </div>
+            <button type="button" id="cart-checkout-btn" onclick="proceedToCheckout()" class="w-full py-3.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-black font-black rounded-xl transition-all shadow-lg hover:shadow-gold-500/20 flex justify-center items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                <i class="fas fa-credit-card"></i> إتمام الشراء
+            </button>
+            <button type="button" id="cart-clear-btn" onclick="clearCart()" class="w-full py-2.5 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 text-gray-400 hover:text-red-400 text-xs font-bold rounded-xl transition-all flex justify-center items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                <i class="fas fa-trash"></i> تفريغ السلة
+            </button>
+        </div>
+    </aside>
+
+    <!-- AUTH MODAL (LOGIN / REGISTER / PROFILE) -->
+    <div id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" class="fixed inset-0 z-[10000] items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-300 hidden">
+        <div id="auth-box" class="bg-cardBg border border-gold-500/30 rounded-3xl max-w-md w-full p-6 sm:p-8 relative gold-glow transform transition-transform duration-300 scale-95 max-h-[92vh] overflow-y-auto">
+            <button type="button" onclick="closeAuthModal()" aria-label="إغلاق" class="absolute top-4 left-4 text-gray-400 hover:text-white p-2 bg-white/5 rounded-full border border-white/5">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-full bg-gold-500/10 flex items-center justify-center text-gold-500 text-2xl mx-auto mb-4 border border-gold-500/20">
+                    <i class="fas fa-user-shield" id="auth-header-icon"></i>
+                </div>
+                <h3 id="auth-title" class="text-xl font-black text-white">حسابك في GAMING ZONE</h3>
+                <p class="text-xs text-gold-400 font-bold mt-1" id="auth-subtitle">سجّل دخولك لمتابعة طلباتك بسهولة</p>
+            </div>
+
+            <div id="auth-forms-wrapper">
+                <div class="grid grid-cols-2 gap-1 bg-black/40 p-1 rounded-xl border border-white/5 mb-6" role="tablist">
+                    <button type="button" role="tab" id="auth-tab-login" onclick="switchAuthTab('login')" class="py-2.5 rounded-lg text-sm font-black transition-all bg-gradient-to-r from-gold-500 to-gold-600 text-black">تسجيل الدخول</button>
+                    <button type="button" role="tab" id="auth-tab-register" onclick="switchAuthTab('register')" class="py-2.5 rounded-lg text-sm font-black transition-all text-gray-400 hover:text-gold-400">إنشاء حساب</button>
+                </div>
+
+                <form id="auth-login-form" onsubmit="handleLogin(event)" class="space-y-4 text-right" novalidate>
+                    <div>
+                        <label for="login-email" class="block text-xs font-bold text-gray-400 mb-2">البريد الإلكتروني</label>
+                        <input type="email" id="login-email" autocomplete="email" dir="ltr" required placeholder="you@example.com" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white text-left focus:outline-none focus:border-gold-500">
+                    </div>
+                    <div>
+                        <label for="login-password" class="block text-xs font-bold text-gray-400 mb-2">كلمة المرور</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" autocomplete="current-password" dir="ltr" required placeholder="••••••••" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 pr-11 text-sm text-white text-left focus:outline-none focus:border-gold-500">
+                            <button type="button" onclick="togglePasswordVisibility('login-password', this)" aria-label="إظهار كلمة المرور" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gold-400"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <p id="login-error" class="text-xs text-red-400 font-bold hidden" role="alert"></p>
+                    <button type="submit" id="login-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-gold-500 to-gold-600 text-black font-black rounded-xl transition-all shadow-lg hover:shadow-gold-500/20 flex justify-center items-center gap-2">
+                        <i class="fas fa-right-to-bracket"></i> دخول
+                    </button>
+                </form>
+
+                <form id="auth-register-form" onsubmit="handleRegister(event)" class="space-y-4 text-right hidden" novalidate>
+                    <div>
+                        <label for="register-name" class="block text-xs font-bold text-gray-400 mb-2">اسمك في الديسكورد</label>
+                        <input type="text" id="register-name" autocomplete="nickname" required maxlength="40" placeholder="user_discord" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold-500">
+                    </div>
+                    <div>
+                        <label for="register-email" class="block text-xs font-bold text-gray-400 mb-2">البريد الإلكتروني</label>
+                        <input type="email" id="register-email" autocomplete="email" dir="ltr" required placeholder="you@example.com" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white text-left focus:outline-none focus:border-gold-500">
+                    </div>
+                    <div>
+                        <label for="register-password" class="block text-xs font-bold text-gray-400 mb-2">كلمة المرور</label>
+                        <div class="relative">
+                            <input type="password" id="register-password" autocomplete="new-password" dir="ltr" required minlength="8" placeholder="8 أحرف على الأقل" oninput="updatePasswordStrength(this.value)" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 pr-11 text-sm text-white text-left focus:outline-none focus:border-gold-500">
+                            <button type="button" onclick="togglePasswordVisibility('register-password', this)" aria-label="إظهار كلمة المرور" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gold-400"><i class="fas fa-eye"></i></button>
+                        </div>
+                        <div class="flex gap-1 mt-2" aria-hidden="true">
+                            <span class="pw-bar h-1 flex-1 rounded-full bg-white/10 transition-colors"></span>
+                            <span class="pw-bar h-1 flex-1 rounded-full bg-white/10 transition-colors"></span>
+                            <span class="pw-bar h-1 flex-1 rounded-full bg-white/10 transition-colors"></span>
+                            <span class="pw-bar h-1 flex-1 rounded-full bg-white/10 transition-colors"></span>
+                        </div>
+                        <p id="pw-strength-label" class="text-[10px] text-gray-500 mt-1">استخدم حروفاً وأرقاماً ورموزاً لكلمة مرور أقوى</p>
+                    </div>
+                    <div>
+                        <label for="register-confirm" class="block text-xs font-bold text-gray-400 mb-2">تأكيد كلمة المرور</label>
+                        <input type="password" id="register-confirm" autocomplete="new-password" dir="ltr" required placeholder="••••••••" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white text-left focus:outline-none focus:border-gold-500">
+                    </div>
+                    <p id="register-error" class="text-xs text-red-400 font-bold hidden" role="alert"></p>
+                    <button type="submit" id="register-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-gold-500 to-gold-600 text-black font-black rounded-xl transition-all shadow-lg hover:shadow-gold-500/20 flex justify-center items-center gap-2">
+                        <i class="fas fa-user-plus"></i> إنشاء الحساب
+                    </button>
+                </form>
+            </div>
+
+            <div id="auth-profile-view" class="hidden text-right space-y-4">
+                <div class="flex items-center gap-4 bg-black/40 p-4 rounded-2xl border border-white/5">
+                    <div id="profile-avatar" class="w-14 h-14 rounded-full bg-gradient-to-br from-gold-500 to-gold-600 text-black text-xl font-black flex items-center justify-center shrink-0">G</div>
+                    <div class="min-w-0">
+                        <h4 id="profile-name" class="text-base font-black text-white truncate"></h4>
+                        <p id="profile-email" class="text-xs text-gray-400 truncate" dir="ltr"></p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-black/40 border border-white/5 px-4 py-3 rounded-xl">
+                        <span class="text-[10px] text-gray-500 block">عدد طلباتك</span>
+                        <span id="profile-orders" class="text-sm font-black text-gold-400">٠</span>
+                    </div>
+                    <div class="bg-black/40 border border-white/5 px-4 py-3 rounded-xl">
+                        <span class="text-[10px] text-gray-500 block">عضو منذ</span>
+                        <span id="profile-joined" class="text-sm font-black text-white"></span>
+                    </div>
+                </div>
+                <button type="button" onclick="handleLogout()" class="w-full py-3 bg-white/5 hover:bg-red-500/10 border border-white/10 hover:border-red-500/30 text-gray-300 hover:text-red-400 font-black text-sm rounded-xl transition-all flex justify-center items-center gap-2">
+                    <i class="fas fa-right-from-bracket"></i> تسجيل الخروج
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- PURCHASE MODAL WITH DIRECT PAYMENT -->
     <div id="purchase-modal" class="fixed inset-0 z-[10000] items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-300 hidden">
-        <div class="bg-cardBg border border-gold-500/30 rounded-3xl max-w-md w-full p-6 sm:p-8 relative gold-glow transform transition-transform duration-300 scale-95" id="modal-box">
+        <div class="bg-cardBg border border-gold-500/30 rounded-3xl max-w-md w-full p-6 sm:p-8 relative gold-glow transform transition-transform duration-300 scale-95 max-h-[92vh] overflow-y-auto" id="modal-box">
             <!-- Close btn -->
             <button onclick="closePurchaseModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white p-2 bg-white/5 rounded-full border border-white/5">
                 <i class="fas fa-times"></i>
@@ -980,16 +1134,58 @@
                     <input type="text" id="modal-customer-name" required="" placeholder="user#0000" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-2">المنتج المطلوب</label>
-                    <input type="text" id="modal-product-input" required="" readonly="" class="w-full bg-black/60 border border-white/5 rounded-xl px-4 py-3 text-sm text-gold-400 focus:outline-none font-bold">
+                    <label class="block text-xs font-bold text-gray-400 mb-2">ملخص الطلب</label>
+                    <div id="modal-order-summary" class="bg-black/60 border border-white/5 rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto"></div>
+                    <div class="flex items-center justify-between mt-2 px-1">
+                        <span class="text-xs text-gray-400 font-bold">الإجمالي المستحق</span>
+                        <span id="modal-order-total" class="text-lg font-black text-gold-400" dir="ltr">$0.00</span>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-400 mb-2">اختر طريقة الدفع</label>
                     <select id="modal-payment-method" onchange="togglePaymentInstructions()" required="" class="w-full bg-black/90 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold-500">
                         <option value="تذكرة ديسكورد">فتح تذكرة بالسيرفر (دفع لاحق)</option>
+                        <option value="فيزا / ماستركارد">فيزا / ماستركارد (بطاقة بنكية)</option>
                         <option value="فودافون كاش">فودافون كاش (دفع مباشر)</option>
                         <option value="انستاباي">InstaPay (دفع مباشر)</option>
                     </select>
+                </div>
+
+                <!-- Card Payment Fields (Visa / Mastercard with Luhn validation) -->
+                <div id="card-payment-box" class="hidden bg-gold-500/10 border border-gold-500/30 rounded-xl p-4 space-y-3 text-right">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-gold-400">بيانات البطاقة البنكية</span>
+                        <div class="flex items-center gap-2 text-2xl" aria-hidden="true">
+                            <i id="card-brand-visa" class="fab fa-cc-visa text-gray-600 transition-colors"></i>
+                            <i id="card-brand-mc" class="fab fa-cc-mastercard text-gray-600 transition-colors"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="card-holder" class="block text-[11px] font-bold text-gray-400 mb-1.5">الاسم على البطاقة</label>
+                        <input type="text" id="card-holder" autocomplete="cc-name" dir="ltr" placeholder="AHMED MOHAMED" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white uppercase text-left focus:outline-none focus:border-gold-500">
+                        <p id="card-holder-error" class="text-[10px] text-red-400 mt-1 hidden"></p>
+                    </div>
+                    <div>
+                        <label for="card-number" class="block text-[11px] font-bold text-gray-400 mb-1.5">رقم البطاقة</label>
+                        <div class="relative">
+                            <input type="text" id="card-number" inputmode="numeric" autocomplete="cc-number" dir="ltr" maxlength="23" placeholder="0000 0000 0000 0000" oninput="handleCardNumberInput(this)" onblur="validateCardField('number', true)" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-white font-mono tracking-wider text-left focus:outline-none focus:border-gold-500">
+                            <i id="card-number-status" class="fas absolute right-3 top-1/2 -translate-y-1/2 text-sm"></i>
+                        </div>
+                        <p id="card-number-error" class="text-[10px] text-red-400 mt-1 hidden"></p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="card-expiry" class="block text-[11px] font-bold text-gray-400 mb-1.5">تاريخ الانتهاء</label>
+                            <input type="text" id="card-expiry" inputmode="numeric" autocomplete="cc-exp" dir="ltr" maxlength="5" placeholder="MM/YY" oninput="handleCardExpiryInput(this)" onblur="validateCardField('expiry', true)" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono text-center focus:outline-none focus:border-gold-500">
+                            <p id="card-expiry-error" class="text-[10px] text-red-400 mt-1 hidden"></p>
+                        </div>
+                        <div>
+                            <label for="card-cvc" class="block text-[11px] font-bold text-gray-400 mb-1.5">رمز CVC</label>
+                            <input type="password" id="card-cvc" inputmode="numeric" autocomplete="cc-csc" dir="ltr" maxlength="3" placeholder="•••" oninput="handleCardCvcInput(this)" onblur="validateCardField('cvc', true)" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono text-center focus:outline-none focus:border-gold-500">
+                            <p id="card-cvc-error" class="text-[10px] text-red-400 mt-1 hidden"></p>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 flex items-center gap-1.5"><i class="fas fa-lock text-gold-500"></i> لا يتم حفظ أو إرسال رقم بطاقتك الكامل أو رمز CVC إطلاقاً.</p>
                 </div>
 
                 <!-- Interactive Direct Payment Instruction Fields -->
@@ -1171,6 +1367,34 @@
         // Zeroed out total sales count starting from 0 (Starts fresh and increments automatically)
         let totalSalesCount = parseInt(localStorage.getItem("gz_sales_total")) || 0;
 
+        // CART, RATINGS & AUTH STORAGE KEYS
+        const CART_KEY = "gz_cart";
+        const RATINGS_KEY = "gz_ratings_stats";
+        const USERS_KEY = "gz_users";
+        const SESSION_KEY = "gz_session";
+        const CARD_METHOD = "فيزا / ماستركارد";
+        const MAX_ITEM_QTY = 99;
+
+        function safeParse(key, fallback) {
+            try {
+                const value = JSON.parse(localStorage.getItem(key));
+                return value ?? fallback;
+            } catch (err) {
+                return fallback;
+            }
+        }
+        function loadCart() {
+            const stored = safeParse(CART_KEY, []);
+            return Array.isArray(stored) ? stored.filter(i => i && i.key && i.qty > 0) : [];
+        }
+        function loadRatingStats() {
+            const stored = safeParse(RATINGS_KEY, { count: 0, sum: 0 });
+            return { count: Number(stored.count) || 0, sum: Number(stored.sum) || 0 };
+        }
+
+        let cart = loadCart();
+        let ratingStats = loadRatingStats();
+
         // UI NAVIGATION
         function navigateTo(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => {
@@ -1222,9 +1446,25 @@
         }
 
         // PURCHASE SYSTEM & DISCORD WEBHOOK
+        // Kept for backwards compatibility with any static "اطلب الآن" buttons
         function openPurchaseModal(productName) {
-            document.getElementById('selected-package-desc').innerText = productName;
-            document.getElementById('modal-product-input').value = productName;
+            const product = products.find(p => p.title === productName);
+            if (product) addToCart(product.id, getFirstFeatureIndex(product), true);
+            openCheckoutModal();
+        }
+
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                showToast("السلة فارغة", "أضف منتجاً واحداً على الأقل إلى السلة قبل إتمام الشراء.", "error");
+                return;
+            }
+            renderCheckoutSummary();
+
+            const user = getCurrentUser();
+            const nameInput = document.getElementById('modal-customer-name');
+            if (user && !nameInput.value.trim()) nameInput.value = user.name;
+
+            document.getElementById('card-payment-box').classList.add('hidden');
             
             // Set payment instruction numbers
             document.getElementById('modal-v-cash-num').innerText = globalConfig.vCashNum || "غير محدد";
@@ -1264,6 +1504,9 @@
             const container = document.getElementById('direct-payment-box');
             const vCash = document.getElementById('v-cash-instruction');
             const insta = document.getElementById('instapay-instruction');
+            const cardBox = document.getElementById('card-payment-box');
+
+            cardBox.classList.toggle('hidden', method !== CARD_METHOD);
 
             if (method === "فودافون كاش") {
                 container.classList.remove('hidden');
@@ -1293,26 +1536,53 @@
 
         async function handlePurchaseSubmit(e) {
             e.preventDefault();
+            if (cart.length === 0) {
+                showToast("السلة فارغة", "لا توجد منتجات في السلة لإتمام الطلب.", "error");
+                closePurchaseModal();
+                return;
+            }
+
+            const customerName = document.getElementById('modal-customer-name').value.trim();
+            const paymentMethod = document.getElementById('modal-payment-method').value;
+            let paymentLabel = paymentMethod;
+
+            if (paymentMethod === CARD_METHOD) {
+                const cardResult = validateAllCardFields();
+                if (!cardResult.ok) {
+                    showToast("بيانات البطاقة غير صحيحة", cardResult.msg, "error");
+                    return;
+                }
+                paymentLabel = `${cardResult.brand === 'visa' ? 'Visa' : 'Mastercard'} •••• ${cardResult.last4}`;
+            }
+
             const btn = document.getElementById('btn-submit-order');
             const originalText = btn.innerHTML;
             btn.innerHTML = `<i class="fas fa-spinner fa-spin animate-spin"></i> جار الإرسال...`;
             btn.disabled = true;
 
-            const customerName = document.getElementById('modal-customer-name').value;
-            const productName = document.getElementById('modal-product-input').value;
-            const paymentMethod = document.getElementById('modal-payment-method').value;
+            const orderQty = getCartQty();
+            const orderTotal = getCartTotal();
+            const itemsText = cart
+                .map(i => `• ${i.title} — ${i.variant} ×${i.qty} = ${formatUSD(i.price * i.qty)}`)
+                .join('\n')
+                .slice(0, 1000);
+            const user = getCurrentUser();
 
             // Prepare Discord Webhook Payload (For orders)
             if (globalConfig.webhookUrl && globalConfig.webhookUrl.trim() !== "") {
+                const fields = [
+                    { name: "👤 اسم العميل", value: customerName, inline: true },
+                    { name: "💰 الإجمالي", value: `${formatUSD(orderTotal)} (${orderQty} قطعة)`, inline: true },
+                    { name: "📦 المنتجات المطلوبة", value: itemsText || "-", inline: false },
+                    { name: "💳 طريقة الدفع", value: paymentLabel, inline: false }
+                ];
+                if (user) fields.splice(1, 0, { name: "📧 البريد", value: user.email, inline: true });
+
                 const payload = {
                     embeds: [{
                         title: "🛒 طلب شراء جديد من المتجر",
                         color: 13150032, // Gold hex
-                        fields: [
-                            { name: "👤 اسم العميل", value: customerName, inline: true },
-                            { name: "📦 المنتج المطلوب", value: productName, inline: true },
-                            { name: "💳 طريقة الدفع", value: paymentMethod, inline: false }
-                        ],
+                        fields,
                         footer: { text: "Gaming Zone Store System" },
                         timestamp: new Date().toISOString()
                     }]
@@ -1330,20 +1600,27 @@
             }
 
             // SUCCESSFUL PURCHASE AUTO INCREMENTS SALES TOTAL (Dynamic State Feature)
-            totalSalesCount += 1;
+            totalSalesCount += orderQty;
             localStorage.setItem("gz_sales_total", totalSalesCount);
-            updateSalesCountDOM();
+            updateSalesCountDOM(true);
+
+            if (user) recordUserOrder(user.email);
+            clearCart(true);
+            resetCardFields();
 
             closePurchaseModal();
             btn.innerHTML = originalText;
             btn.disabled = false;
 
             // Give specific instructions based on payment method
-            let msg = `تم إرسال طلبك بنجاح للإدارة! جارٍ توجيهك للسيرفر لفتح تذكرة.`;
+            const totalText = formatUSD(orderTotal);
+            let msg = `تم إرسال طلبك بقيمة ${totalText} بنجاح للإدارة! جارٍ توجيهك للسيرفر لفتح تذكرة.`;
             if (paymentMethod === "فودافون كاش") {
-                msg = `تم إرسال طلبك! يرجى تحويل المبلغ لرقم فودافون كاش: ${globalConfig.vCashNum || 'غير محدد'} ثم افتح تذكرة بالوصل في الديسكورد.`;
+                msg = `تم إرسال طلبك! يرجى تحويل ${totalText} لرقم فودافون كاش: ${globalConfig.vCashNum || 'غير محدد'} ثم افتح تذكرة بالوصل في الديسكورد.`;
             } else if (paymentMethod === "انستاباي") {
-                msg = `تم إرسال طلبك! يرجى تحويل المبلغ ليوزر الانستاباي: ${globalConfig.instaPay || 'غير محدد'} ثم افتح تذكرة بالوصل في الديسكورد.`;
+                msg = `تم إرسال طلبك! يرجى تحويل ${totalText} ليوزر الانستاباي: ${globalConfig.instaPay || 'غير محدد'} ثم افتح تذكرة بالوصل في الديسكورد.`;
+            } else if (paymentMethod === CARD_METHOD) {
+                msg = `تم التحقق من بطاقتك (${paymentLabel}) وإرسال طلبك بقيمة ${totalText}. سيتم تأكيد الدفع وتسليم طلبك عبر تذكرة الديسكورد.`;
             }
 
             showToast("تم إرسال الطلب", msg, "success");
@@ -1422,6 +1699,7 @@
                         body: JSON.stringify(payload)
                     });
                     
+                    recordRating(rStars);
                     showToast("نشكرك على التقييم", "تم إرسال تقييمك ورأيك فورياً إلى سيرفر ديسكورد بنجاح!", "success");
                     document.getElementById('store-rating-form').reset();
                     setRatingValue(5); // Reset stars to 5
@@ -1430,20 +1708,652 @@
                     showToast("خطأ بروتوكول", "حدث خطأ أثناء الاتصال بالويب هوك، تأكد من صحة الرابط.", "error");
                 }
             } else {
-                showToast("تنبيه الإدارة", "يرجى تعبئة رابط ديسكورد ويبهوك التقييمات في لوحة التحكم لاستقبال التقييمات مباشرة بالسيرفر.", "info");
+                recordRating(rStars);
+                document.getElementById('store-rating-form').reset();
+                setRatingValue(5);
+                showToast("تنبيه الإدارة", "تم حفظ تقييمك. يرجى تعبئة رابط ديسكورد ويبهوك التقييمات في لوحة التحكم لاستقبال التقييمات مباشرة بالسيرفر.", "info");
             }
 
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
 
-        // UPDATE DYNAMIC SALES ELEMENT
-        function updateSalesCountDOM() {
-            const salesElement = document.getElementById('stat-total-sales');
-            if (salesElement) {
-                salesElement.innerText = `${totalSalesCount.toLocaleString('ar-EG')} مبيعة`;
+        // ===================== HELPERS =====================
+        function escapeHtml(str) {
+            return String(str ?? "").replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+        function formatUSD(value) {
+            return `$${(Math.round((Number(value) || 0) * 100) / 100).toFixed(2)}`;
+        }
+        function parsePrice(text) {
+            if (!text) return null;
+            const match = String(text).match(/(\d+(?:[.,]\d+)?)\s*\$|\$\s*(\d+(?:[.,]\d+)?)/);
+            if (!match) return null;
+            const value = parseFloat((match[1] || match[2]).replace(',', '.'));
+            return Number.isFinite(value) ? value : null;
+        }
+        function stripPrice(text) {
+            return String(text).replace(/\s*[-–—]\s*\$?\s*\d+(?:[.,]\d+)?\s*\$?\s*$/, '').trim() || String(text).trim();
+        }
+        function getFirstFeatureIndex(product) {
+            return (product.features || []).findIndex(f => f && f.trim() !== "" && parsePrice(f) !== null);
+        }
+
+        // ===================== SHOPPING CART =====================
+        function saveCart() {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        }
+        function getCartQty() {
+            return cart.reduce((sum, i) => sum + i.qty, 0);
+        }
+        function getCartTotal() {
+            return Math.round(cart.reduce((sum, i) => sum + i.price * i.qty, 0) * 100) / 100;
+        }
+
+        function addToCart(productId, featureIndex, silent = false) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            const feature = featureIndex >= 0 ? (product.features || [])[featureIndex] : null;
+            const price = parsePrice(feature) ?? parsePrice(product.price) ?? 0;
+            const variant = feature ? stripPrice(feature) : "الباقة الأساسية";
+            const key = `${productId}:${featureIndex}`;
+
+            const existing = cart.find(i => i.key === key);
+            if (existing) {
+                if (existing.qty >= MAX_ITEM_QTY) {
+                    showToast("الحد الأقصى", `لا يمكن إضافة أكثر من ${MAX_ITEM_QTY} قطعة من نفس المنتج.`, "error");
+                    return;
+                }
+                existing.qty += 1;
+            } else {
+                cart.push({ key, productId, title: product.title, variant, price, icon: product.icon || "fas fa-shopping-bag", qty: 1 });
+            }
+            saveCart();
+            renderCart(true);
+            if (!silent) showToast("تمت الإضافة للسلة", `${escapeHtml(variant)} — ${formatUSD(price)}`, "success");
+        }
+
+        function changeCartQty(key, delta) {
+            const item = cart.find(i => i.key === key);
+            if (!item) return;
+            setCartQty(key, item.qty + delta);
+        }
+
+        function setCartQty(key, value) {
+            const qty = parseInt(value, 10);
+            if (!Number.isFinite(qty) || qty <= 0) {
+                removeFromCart(key);
+                return;
+            }
+            const item = cart.find(i => i.key === key);
+            if (!item) return;
+            item.qty = Math.min(qty, MAX_ITEM_QTY);
+            saveCart();
+            renderCart(true);
+        }
+
+        function removeFromCart(key) {
+            cart = cart.filter(i => i.key !== key);
+            saveCart();
+            renderCart(true);
+        }
+
+        function clearCart(silent = false) {
+            if (!silent && cart.length > 0 && !confirm("هل تريد تفريغ السلة بالكامل؟")) return;
+            cart = [];
+            saveCart();
+            renderCart();
+        }
+
+        function renderCart(bump = false) {
+            const list = document.getElementById('cart-items-list');
+            const qty = getCartQty();
+            const total = getCartTotal();
+
+            const badge = document.getElementById('cart-count-badge');
+            badge.textContent = qty > 99 ? "99+" : String(qty);
+            badge.classList.toggle('hidden', qty === 0);
+            if (bump && qty > 0) {
+                badge.classList.add('scale-125');
+                setTimeout(() => badge.classList.remove('scale-125'), 250);
+            }
+
+            document.getElementById('cart-items-count-label').textContent = qty === 0
+                ? "السلة فارغة"
+                : `${cart.length.toLocaleString('ar-EG')} منتج • ${qty.toLocaleString('ar-EG')} قطعة`;
+            document.getElementById('cart-total-qty').textContent = qty.toLocaleString('ar-EG');
+            document.getElementById('cart-total-price').textContent = formatUSD(total);
+            document.getElementById('cart-checkout-btn').disabled = qty === 0;
+            document.getElementById('cart-clear-btn').disabled = qty === 0;
+
+            if (cart.length === 0) {
+                list.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center py-16">
+                        <div class="w-20 h-20 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400 text-3xl mb-4"><i class="fas fa-basket-shopping"></i></div>
+                        <h4 class="text-lg font-black text-white mb-1">سلتك فارغة حالياً</h4>
+                        <p class="text-xs text-gray-400 mb-6">تصفح المتجر وأضف المنتجات التي تريدها</p>
+                        <button type="button" onclick="closeCartDrawer(); navigateTo('store')" class="px-6 py-2.5 bg-white/5 border border-gold-500/30 hover:border-gold-500 text-gold-400 font-black text-sm rounded-xl transition-all flex items-center gap-2"><i class="fas fa-store"></i> تصفح المتجر</button>
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = cart.map(item => `
+                <div class="bg-cardBg border border-white/5 rounded-2xl p-4 flex gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-gold-500/10 text-gold-400 flex items-center justify-center border border-gold-500/20 shrink-0"><i class="${escapeHtml(item.icon)}"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="min-w-0">
+                                <h4 class="text-sm font-black text-white truncate">${escapeHtml(item.title)}</h4>
+                                <p class="text-[11px] text-gray-400 leading-relaxed">${escapeHtml(item.variant)}</p>
+                            </div>
+                            <button type="button" onclick="removeFromCart('${item.key}')" aria-label="حذف ${escapeHtml(item.variant)} من السلة" class="text-gray-500 hover:text-red-400 text-xs p-1.5 shrink-0 transition-colors"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="flex items-center justify-between mt-3">
+                            <div class="flex items-center bg-black/40 border border-white/10 rounded-lg overflow-hidden" dir="ltr">
+                                <button type="button" onclick="changeCartQty('${item.key}', -1)" aria-label="إنقاص الكمية" class="w-8 h-8 text-gray-300 hover:text-gold-400 hover:bg-white/5 transition-colors"><i class="fas fa-minus text-[10px]"></i></button>
+                                <input type="number" min="1" max="${MAX_ITEM_QTY}" value="${item.qty}" aria-label="الكمية" onchange="setCartQty('${item.key}', this.value)" class="w-10 h-8 bg-transparent text-center text-sm font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
+                                <button type="button" onclick="changeCartQty('${item.key}', 1)" aria-label="زيادة الكمية" class="w-8 h-8 text-gray-300 hover:text-gold-400 hover:bg-white/5 transition-colors"><i class="fas fa-plus text-[10px]"></i></button>
+                            </div>
+                            <div class="text-left">
+                                <span class="block text-[10px] text-gray-500" dir="ltr">${formatUSD(item.price)} × ${item.qty}</span>
+                                <span class="text-sm font-black text-gold-400" dir="ltr">${formatUSD(item.price * item.qty)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function openCartDrawer() {
+            renderCart();
+            document.getElementById('cart-overlay').classList.remove('opacity-0', 'pointer-events-none');
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.remove('-translate-x-full');
+            drawer.classList.add('translate-x-0');
+            drawer.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeCartDrawer() {
+            document.getElementById('cart-overlay').classList.add('opacity-0', 'pointer-events-none');
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.add('-translate-x-full');
+            drawer.classList.remove('translate-x-0');
+            drawer.setAttribute('aria-hidden', 'true');
+        }
+
+        function isCartOpen() {
+            return document.getElementById('cart-drawer').classList.contains('translate-x-0');
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) return;
+            closeCartDrawer();
+            setTimeout(openCheckoutModal, 200);
+        }
+
+        function renderCheckoutSummary() {
+            const qty = getCartQty();
+            document.getElementById('selected-package-desc').textContent = `${cart.length.toLocaleString('ar-EG')} منتج • ${qty.toLocaleString('ar-EG')} قطعة`;
+            document.getElementById('modal-order-summary').innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between gap-3 text-xs">
+                    <span class="text-gray-300 min-w-0 truncate"><span class="text-white font-bold">${escapeHtml(item.title)}</span> — ${escapeHtml(item.variant)} <span class="text-gold-500 font-bold">×${item.qty}</span></span>
+                    <span class="text-gold-400 font-black shrink-0" dir="ltr">${formatUSD(item.price * item.qty)}</span>
+                </div>`).join('');
+            document.getElementById('modal-order-total').textContent = formatUSD(getCartTotal());
+        }
+
+        // ===================== CARD VALIDATION (LUHN) =====================
+        function luhnCheck(digits) {
+            let sum = 0;
+            let shouldDouble = false;
+            for (let i = digits.length - 1; i >= 0; i--) {
+                let d = parseInt(digits[i], 10);
+                if (shouldDouble) {
+                    d *= 2;
+                    if (d > 9) d -= 9;
+                }
+                sum += d;
+                shouldDouble = !shouldDouble;
+            }
+            return digits.length > 0 && sum % 10 === 0;
+        }
+
+        function detectCardBrand(digits) {
+            if (/^4/.test(digits)) return 'visa';
+            const p2 = parseInt(digits.slice(0, 2), 10);
+            const p4 = parseInt(digits.slice(0, 4), 10);
+            if ((p2 >= 51 && p2 <= 55) || (digits.length >= 4 && p4 >= 2221 && p4 <= 2720)) return 'mastercard';
+            return null;
+        }
+
+        function validateCardNumber(raw) {
+            const digits = raw.replace(/\D/g, '');
+            if (!digits) return { ok: false, msg: "أدخل رقم البطاقة" };
+            const brand = detectCardBrand(digits);
+            if (!brand) return { ok: false, msg: "نقبل فقط بطاقات فيزا أو ماستركارد" };
+            const validLength = brand === 'visa' ? [13, 16, 19].includes(digits.length) : digits.length === 16;
+            if (!validLength) return { ok: false, msg: "عدد أرقام البطاقة غير صحيح", brand };
+            if (!luhnCheck(digits)) return { ok: false, msg: "رقم البطاقة غير صالح (فشل فحص Luhn)", brand };
+            return { ok: true, brand, digits };
+        }
+
+        function validateCardExpiry(raw) {
+            const match = raw.trim().match(/^(\d{2})\/(\d{2})$/);
+            if (!match) return { ok: false, msg: "استخدم الصيغة MM/YY" };
+            const month = parseInt(match[1], 10);
+            const year = 2000 + parseInt(match[2], 10);
+            if (month < 1 || month > 12) return { ok: false, msg: "الشهر يجب أن يكون بين 01 و 12" };
+            const now = new Date();
+            const expiresAt = new Date(year, month, 0, 23, 59, 59);
+            if (expiresAt < now) return { ok: false, msg: "البطاقة منتهية الصلاحية" };
+            if (year > now.getFullYear() + 20) return { ok: false, msg: "سنة الانتهاء غير منطقية" };
+            return { ok: true };
+        }
+
+        function validateCardCvc(raw) {
+            return /^\d{3}$/.test(raw) ? { ok: true } : { ok: false, msg: "رمز CVC يجب أن يتكون من 3 أرقام" };
+        }
+
+        function validateCardHolder(raw) {
+            const name = raw.trim();
+            return name.length >= 3 && /^[\p{L}\s.'-]+$/u.test(name)
+                ? { ok: true }
+                : { ok: false, msg: "أدخل الاسم كما هو مكتوب على البطاقة" };
+        }
+
+        const cardFieldConfig = {
+            holder: { input: 'card-holder', error: 'card-holder-error', validate: validateCardHolder },
+            number: { input: 'card-number', error: 'card-number-error', validate: validateCardNumber, status: 'card-number-status' },
+            expiry: { input: 'card-expiry', error: 'card-expiry-error', validate: validateCardExpiry },
+            cvc: { input: 'card-cvc', error: 'card-cvc-error', validate: validateCardCvc }
+        };
+
+        function setCardFieldUI(field, result, showError) {
+            const cfg = cardFieldConfig[field];
+            const input = document.getElementById(cfg.input);
+            const errorEl = document.getElementById(cfg.error);
+            input.classList.remove('border-white/10', 'border-green-500/60', 'border-red-500/60');
+            const showInvalid = !result.ok && showError;
+            input.classList.add(result.ok ? 'border-green-500/60' : showInvalid ? 'border-red-500/60' : 'border-white/10');
+            input.setAttribute('aria-invalid', showInvalid ? 'true' : 'false');
+            errorEl.textContent = showInvalid ? result.msg : "";
+            errorEl.classList.toggle('hidden', !showInvalid);
+            if (cfg.status) {
+                const icon = document.getElementById(cfg.status);
+                icon.className = 'fas absolute right-3 top-1/2 -translate-y-1/2 text-sm ' +
+                    (result.ok ? 'fa-circle-check text-green-400' : showInvalid ? 'fa-circle-xmark text-red-400' : '');
             }
         }
+
+        function validateCardField(field, showError) {
+            const cfg = cardFieldConfig[field];
+            const value = document.getElementById(cfg.input).value;
+            const result = cfg.validate(value);
+            const isEmpty = value.trim() === "";
+            setCardFieldUI(field, result, showError && !isEmpty);
+            return result;
+        }
+
+        function updateCardBrandIcons(brand) {
+            document.getElementById('card-brand-visa').classList.toggle('text-gold-400', brand === 'visa');
+            document.getElementById('card-brand-visa').classList.toggle('text-gray-600', brand !== 'visa');
+            document.getElementById('card-brand-mc').classList.toggle('text-gold-400', brand === 'mastercard');
+            document.getElementById('card-brand-mc').classList.toggle('text-gray-600', brand !== 'mastercard');
+        }
+
+        function handleCardNumberInput(input) {
+            const digits = input.value.replace(/\D/g, '').slice(0, 19);
+            input.value = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+            const brand = digits.length ? detectCardBrand(digits) : null;
+            updateCardBrandIcons(brand);
+            const unsupported = digits.length >= 2 && !brand;
+            validateCardField('number', unsupported || digits.length >= 16);
+        }
+
+        function handleCardExpiryInput(input) {
+            let digits = input.value.replace(/\D/g, '').slice(0, 4);
+            if (digits.length === 1 && parseInt(digits, 10) > 1) digits = '0' + digits;
+            input.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+            validateCardField('expiry', input.value.length === 5);
+        }
+
+        function handleCardCvcInput(input) {
+            input.value = input.value.replace(/\D/g, '').slice(0, 3);
+            validateCardField('cvc', input.value.length === 3);
+        }
+
+        function validateAllCardFields() {
+            const order = ['holder', 'number', 'expiry', 'cvc'];
+            let firstError = null;
+            let numberResult = null;
+            order.forEach(field => {
+                const cfg = cardFieldConfig[field];
+                const result = cfg.validate(document.getElementById(cfg.input).value);
+                setCardFieldUI(field, result, true);
+                if (field === 'number') numberResult = result;
+                if (!result.ok && !firstError) firstError = { field, msg: result.msg };
+            });
+            if (firstError) {
+                document.getElementById(cardFieldConfig[firstError.field].input).focus();
+                return { ok: false, msg: firstError.msg };
+            }
+            return { ok: true, brand: numberResult.brand, last4: numberResult.digits.slice(-4) };
+        }
+
+        function resetCardFields() {
+            Object.keys(cardFieldConfig).forEach(field => {
+                document.getElementById(cardFieldConfig[field].input).value = "";
+                setCardFieldUI(field, { ok: false, msg: "" }, false);
+            });
+            updateCardBrandIcons(null);
+        }
+
+        // ===================== LIVE COUNTERS =====================
+        const displayedStats = { sales: null, avg: null, count: null };
+
+        function animateStat(el, key, target, format, animate) {
+            const from = displayedStats[key];
+            displayedStats[key] = target;
+            if (!animate || from === null || from === target) {
+                el.textContent = format(target);
+                return;
+            }
+            const duration = 900;
+            const start = performance.now();
+            const step = (now) => {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = format(from + (target - from) * eased);
+                if (progress < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+            el.classList.add('scale-110');
+            setTimeout(() => el.classList.remove('scale-110'), 450);
+        }
+
+        function updateSalesCountDOM(animate = false) {
+            const salesElement = document.getElementById('stat-total-sales');
+            if (!salesElement) return;
+            animateStat(salesElement, 'sales', totalSalesCount, v => `${Math.round(v).toLocaleString('ar-EG')} مبيعة`, animate);
+        }
+
+        function updateRatingStatsDOM(animate = false) {
+            const avgEl = document.getElementById('stat-rating-avg');
+            const countEl = document.getElementById('stat-rating-count');
+            if (!avgEl || !countEl) return;
+            if (ratingStats.count === 0) {
+                avgEl.textContent = "— / 5.0 ★";
+                displayedStats.avg = null;
+            } else {
+                const avg = ratingStats.sum / ratingStats.count;
+                animateStat(avgEl, 'avg', avg, v => `${v.toFixed(1)} / 5.0 ★`, animate);
+            }
+            animateStat(countEl, 'count', ratingStats.count, v => `${Math.round(v).toLocaleString('ar-EG')} تقييم`, animate);
+        }
+
+        function recordRating(stars) {
+            const value = Math.min(5, Math.max(1, parseInt(stars, 10) || 5));
+            ratingStats = loadRatingStats();
+            ratingStats.count += 1;
+            ratingStats.sum += value;
+            localStorage.setItem(RATINGS_KEY, JSON.stringify(ratingStats));
+            updateRatingStatsDOM(true);
+        }
+
+        // ===================== ACCOUNTS (LOCAL) =====================
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        function getUsers() {
+            const users = safeParse(USERS_KEY, []);
+            return Array.isArray(users) ? users : [];
+        }
+        function saveUsers(users) {
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+        function getCurrentUser() {
+            const session = safeParse(SESSION_KEY, null);
+            if (!session || !session.email) return null;
+            return getUsers().find(u => u.email === session.email) || null;
+        }
+        function recordUserOrder(email) {
+            const users = getUsers();
+            const user = users.find(u => u.email === email);
+            if (!user) return;
+            user.orders = (user.orders || 0) + 1;
+            saveUsers(users);
+        }
+
+        function bytesToHex(bytes) {
+            return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+        }
+        function generateSalt() {
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            return bytesToHex(bytes);
+        }
+        async function hashPassword(password, salt) {
+            const data = new TextEncoder().encode(`${salt}:${password}`);
+            if (window.crypto && crypto.subtle) {
+                const buffer = await crypto.subtle.digest('SHA-256', data);
+                return bytesToHex(new Uint8Array(buffer));
+            }
+            // Fallback for non-secure contexts (e.g. opened via file://) where SubtleCrypto is unavailable
+            let h1 = 0x811c9dc5, h2 = 0x01000193;
+            for (const byte of data) {
+                h1 = Math.imul(h1 ^ byte, 16777619) >>> 0;
+                h2 = Math.imul(h2 ^ byte, 2246822519) >>> 0;
+            }
+            return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
+        }
+
+        function openAuthModal() {
+            renderAuthView();
+            const modal = document.getElementById('auth-modal');
+            const box = document.getElementById('auth-box');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                box.classList.remove('scale-95');
+                box.classList.add('scale-100');
+                const firstInput = modal.querySelector('form:not(.hidden) input');
+                if (firstInput && !getCurrentUser()) firstInput.focus();
+            }, 50);
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            const box = document.getElementById('auth-box');
+            box.classList.remove('scale-100');
+            box.classList.add('scale-95');
+            modal.classList.remove('opacity-100');
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function switchAuthTab(tab) {
+            const isLogin = tab === 'login';
+            const active = ['bg-gradient-to-r', 'from-gold-500', 'to-gold-600', 'text-black'];
+            const inactive = ['text-gray-400', 'hover:text-gold-400'];
+            const loginTab = document.getElementById('auth-tab-login');
+            const registerTab = document.getElementById('auth-tab-register');
+            loginTab.classList.remove(...active, ...inactive);
+            registerTab.classList.remove(...active, ...inactive);
+            loginTab.classList.add(...(isLogin ? active : inactive));
+            registerTab.classList.add(...(isLogin ? inactive : active));
+            loginTab.setAttribute('aria-selected', String(isLogin));
+            registerTab.setAttribute('aria-selected', String(!isLogin));
+            document.getElementById('auth-login-form').classList.toggle('hidden', !isLogin);
+            document.getElementById('auth-register-form').classList.toggle('hidden', isLogin);
+            document.getElementById('auth-subtitle').textContent = isLogin
+                ? "سجّل دخولك لمتابعة طلباتك بسهولة"
+                : "أنشئ حسابك مجاناً خلال ثوانٍ";
+            hideAuthErrors();
+        }
+
+        function hideAuthErrors() {
+            ['login-error', 'register-error'].forEach(id => {
+                const el = document.getElementById(id);
+                el.textContent = "";
+                el.classList.add('hidden');
+            });
+        }
+
+        function showAuthError(id, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.classList.remove('hidden');
+        }
+
+        function renderAuthView() {
+            const user = getCurrentUser();
+            document.getElementById('auth-forms-wrapper').classList.toggle('hidden', !!user);
+            document.getElementById('auth-profile-view').classList.toggle('hidden', !user);
+            document.getElementById('auth-header-icon').className = user ? 'fas fa-user-check' : 'fas fa-user-shield';
+            if (user) {
+                document.getElementById('auth-title').textContent = "حسابي";
+                document.getElementById('auth-subtitle').textContent = `أهلاً بك من جديد، ${user.name}`;
+                document.getElementById('profile-avatar').textContent = (user.name || user.email).trim().charAt(0).toUpperCase();
+                document.getElementById('profile-name').textContent = user.name;
+                document.getElementById('profile-email').textContent = user.email;
+                document.getElementById('profile-orders').textContent = (user.orders || 0).toLocaleString('ar-EG');
+                document.getElementById('profile-joined').textContent = new Date(user.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short' });
+            } else {
+                document.getElementById('auth-title').textContent = "حسابك في GAMING ZONE";
+                switchAuthTab('login');
+            }
+        }
+
+        function updateAuthUI() {
+            const user = getCurrentUser();
+            const btn = document.getElementById('header-account-btn');
+            document.getElementById('header-account-icon').className = user ? 'fas fa-user-check text-lg text-gold-400' : 'fas fa-user text-lg';
+            document.getElementById('header-account-label').textContent = user ? user.name : "تسجيل الدخول";
+            btn.setAttribute('aria-label', user ? `حسابي: ${user.name}` : "تسجيل الدخول");
+            if (!document.getElementById('auth-modal').classList.contains('hidden')) renderAuthView();
+        }
+
+        function setButtonLoading(btn, loading, html) {
+            if (loading) {
+                btn.dataset.originalHtml = btn.innerHTML;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${html}`;
+                btn.disabled = true;
+            } else {
+                btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML;
+                btn.disabled = false;
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            hideAuthErrors();
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim().toLowerCase();
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+
+            if (name.length < 2 || name.length > 40) return showAuthError('register-error', "أدخل اسماً صحيحاً (من 2 إلى 40 حرفاً).");
+            if (!EMAIL_REGEX.test(email)) return showAuthError('register-error', "صيغة البريد الإلكتروني غير صحيحة.");
+            if (password.length < 8) return showAuthError('register-error', "كلمة المرور يجب أن تكون 8 أحرف على الأقل.");
+            if (!/[A-Za-z\u0600-\u06FF]/.test(password) || !/\d/.test(password)) return showAuthError('register-error', "كلمة المرور يجب أن تحتوي على حروف وأرقام.");
+            if (password !== confirmPassword) return showAuthError('register-error', "كلمتا المرور غير متطابقتين.");
+
+            const users = getUsers();
+            if (users.some(u => u.email === email)) return showAuthError('register-error', "يوجد حساب مسجّل بهذا البريد بالفعل، سجّل دخولك.");
+
+            const btn = document.getElementById('register-submit-btn');
+            setButtonLoading(btn, true, "جار إنشاء الحساب...");
+            const salt = generateSalt();
+            const passwordHash = await hashPassword(password, salt);
+            users.push({ id: "u" + Date.now(), name, email, salt, passwordHash, createdAt: new Date().toISOString(), orders: 0 });
+            saveUsers(users);
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ email, at: Date.now() }));
+            setButtonLoading(btn, false);
+
+            document.getElementById('auth-register-form').reset();
+            updatePasswordStrength("");
+            updateAuthUI();
+            renderAuthView();
+            showToast("تم إنشاء الحساب", `مرحباً بك ${escapeHtml(name)} في عائلة GAMING ZONE!`, "success");
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideAuthErrors();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+            if (!EMAIL_REGEX.test(email) || !password) return showAuthError('login-error', "أدخل البريد الإلكتروني وكلمة المرور.");
+
+            const btn = document.getElementById('login-submit-btn');
+            setButtonLoading(btn, true, "جار التحقق...");
+            const user = getUsers().find(u => u.email === email);
+            const hash = user ? await hashPassword(password, user.salt) : null;
+            setButtonLoading(btn, false);
+
+            if (!user || hash !== user.passwordHash) return showAuthError('login-error', "البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ email, at: Date.now() }));
+            document.getElementById('auth-login-form').reset();
+            updateAuthUI();
+            renderAuthView();
+            showToast("تم تسجيل الدخول", `أهلاً بعودتك يا ${escapeHtml(user.name)}!`, "success");
+        }
+
+        function handleLogout() {
+            localStorage.removeItem(SESSION_KEY);
+            updateAuthUI();
+            renderAuthView();
+            showToast("تم تسجيل الخروج", "نراك قريباً في GAMING ZONE.", "info");
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.innerHTML = `<i class="fas ${show ? 'fa-eye-slash' : 'fa-eye'}"></i>`;
+            btn.setAttribute('aria-label', show ? "إخفاء كلمة المرور" : "إظهار كلمة المرور");
+        }
+
+        function updatePasswordStrength(value) {
+            let score = 0;
+            if (value.length >= 8) score++;
+            if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score++;
+            if (/\d/.test(value)) score++;
+            if (/[^A-Za-z0-9]/.test(value)) score++;
+            const colors = ['bg-red-500', 'bg-orange-400', 'bg-gold-500', 'bg-green-500'];
+            const labels = ["ضعيفة جداً", "ضعيفة", "جيدة", "قوية جداً"];
+            document.querySelectorAll('.pw-bar').forEach((bar, idx) => {
+                bar.classList.remove('bg-white/10', ...colors);
+                bar.classList.add(idx < score ? colors[score - 1] : 'bg-white/10');
+            });
+            document.getElementById('pw-strength-label').textContent = value
+                ? `قوة كلمة المرور: ${labels[Math.max(score - 1, 0)]}`
+                : "استخدم حروفاً وأرقاماً ورموزاً لكلمة مرور أقوى";
+        }
+
+        // ===================== CROSS-TAB LIVE SYNC & KEYBOARD =====================
+        window.addEventListener('storage', (e) => {
+            if (e.key === "gz_sales_total") {
+                totalSalesCount = parseInt(e.newValue) || 0;
+                updateSalesCountDOM(true);
+            } else if (e.key === RATINGS_KEY) {
+                ratingStats = loadRatingStats();
+                updateRatingStatsDOM(true);
+            } else if (e.key === CART_KEY) {
+                cart = loadCart();
+                renderCart(true);
+            } else if (e.key === SESSION_KEY || e.key === USERS_KEY) {
+                updateAuthUI();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            if (!document.getElementById('auth-modal').classList.contains('hidden')) closeAuthModal();
+            else if (!document.getElementById('purchase-modal').classList.contains('hidden')) closePurchaseModal();
+            else if (isCartOpen()) closeCartDrawer();
+        });
 
         function copyIPToClipboard() {
             const input = document.createElement('input');
@@ -1531,7 +2441,7 @@
                 return;
             }
             products.forEach(p => {
-                let featuresHtml = (p.features || []).filter(f=>f.trim()!=="").map(f => `<div class="flex items-center justify-between text-xs text-gray-300"><span class="flex items-center gap-2"><i class="fas fa-check-circle text-gold-500 text-[10px]"></i><span>${f}</span></span></div>`).join('');
+                let featuresHtml = (p.features || []).map((f, i) => ({ f, i })).filter(x => x.f && x.f.trim() !== "").map(({ f, i }) => `<div class="flex items-center justify-between gap-2 text-xs text-gray-300"><span class="flex items-center gap-2"><i class="fas fa-check-circle text-gold-500 text-[10px]"></i><span>${f}</span></span><button type="button" onclick="addToCart('${p.id}', ${i})" aria-label="إضافة ${escapeHtml(f)} إلى السلة" title="أضف للسلة" class="shrink-0 w-7 h-7 rounded-lg bg-gold-500/10 border border-gold-500/20 text-gold-400 hover:bg-gold-500 hover:text-black transition-all flex items-center justify-center"><i class="fas fa-cart-plus text-[11px]"></i></button></div>`).join('');
                 const catInfo = p.category === 'nitro' ? {l:'نيترو', c:'purple'} : p.category === 'accounts' ? {l:'حسابات', c:'gold'} : p.category === 'currency' ? {l:'عملات', c:'blue'} : {l:'أخرى', c:'gray'};
                 
                 // Use custom product image if exists, else show category icon
@@ -1553,7 +2463,7 @@
                         </div>
                         <div class="flex items-center justify-between gap-4 mt-auto">
                             <div class="flex flex-col"><span class="text-[10px] text-gray-500">يبدأ من</span><span class="text-xl font-black text-gold-400">${p.price}</span></div>
-                            <button onclick="openPurchaseModal('${p.title}')" class="flex-grow py-3 bg-gradient-to-r from-gold-500 to-gold-600 text-black text-sm font-black rounded-xl transition-all hover:scale-[1.02]">اطلب الآن</button>
+                            <button onclick="addToCart('${p.id}', ${getFirstFeatureIndex(p)})" class="flex-grow py-3 bg-gradient-to-r from-gold-500 to-gold-600 text-black text-sm font-black rounded-xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
                         </div>
                     </div>`;
             });
@@ -1814,6 +2724,20 @@
                 const passInput = exportDoc.querySelector('#admin-pass-input');
                 if (passInput) passInput.value = "";
 
+                // Strip visitor-specific cart / account state from the exported file
+                const exportCartList = exportDoc.querySelector('#cart-items-list');
+                if (exportCartList) exportCartList.innerHTML = "";
+                const exportBadge = exportDoc.querySelector('#cart-count-badge');
+                if (exportBadge) { exportBadge.textContent = "0"; exportBadge.classList.add('hidden'); }
+                const exportAccountLabel = exportDoc.querySelector('#header-account-label');
+                if (exportAccountLabel) exportAccountLabel.textContent = "تسجيل الدخول";
+                const exportAccountIcon = exportDoc.querySelector('#header-account-icon');
+                if (exportAccountIcon) exportAccountIcon.className = "fas fa-user text-lg";
+                ['#modal-customer-name', '#card-holder', '#card-number', '#card-expiry', '#card-cvc', '#login-email', '#login-password', '#register-name', '#register-email', '#register-password', '#register-confirm'].forEach(sel => {
+                    const el = exportDoc.querySelector(sel);
+                    if (el) { el.removeAttribute('value'); el.value = ""; }
+                });
+
                 // Get entire HTML Structure
                 let fileContent = "<!DOCTYPE html>\n" + exportDoc.outerHTML;
 
@@ -1862,7 +2786,8 @@
 
         window.onload = function() {
             resizeCanvas(); initParticles(); animateParticles();
-            applyGlobalConfigs(); renderStoreProducts(); renderTeamMembers(); updateSalesCountDOM();
+            applyGlobalConfigs(); renderStoreProducts(); renderTeamMembers(); updateSalesCountDOM(); updateRatingStatsDOM();
+            renderCart(); updateAuthUI();
             setTimeout(() => showToast("أهلاً بك في Gaming Zone!", "استكشف متجرنا الموثق والسلع الحصرية الآن.", "success"), 800);
         };
     </script>
