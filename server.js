@@ -19,9 +19,28 @@ const TYPES = {
   ".mp3": "audio/mpeg",
 };
 
+const discordAuth = require("./lib/discord-auth");
+const API_ROUTES = {
+  "/api/auth/discord/login": discordAuth.login,
+  "/api/auth/discord/callback": discordAuth.callback,
+  "/api/auth/me": discordAuth.me,
+  "/api/auth/logout": discordAuth.logout,
+};
+
 http
   .createServer((req, res) => {
     const urlPath = decodeURIComponent(req.url.split("?")[0]);
+    if (API_ROUTES[urlPath]) {
+      return Promise.resolve(API_ROUTES[urlPath](req, res)).catch((err) => {
+        console.error(err);
+        if (!res.headersSent) res.writeHead(500);
+        res.end("Server error");
+      });
+    }
+    if (urlPath.startsWith("/lib/") || urlPath.startsWith("/api/") || urlPath === "/server.js") {
+      res.writeHead(404);
+      return res.end("Not found");
+    }
     let filePath = path.normalize(path.join(ROOT, urlPath));
     if (!filePath.startsWith(ROOT)) {
       res.writeHead(403);
